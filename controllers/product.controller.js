@@ -3,24 +3,21 @@ import Product from '../models/product.model.js';
 
 export const createProduct = async (req, res) => {
 	try {
-		const { title, description, price, discountPrice, category, size, loadCapacity, engine } = req.body;
+		const { name, price, sold, reviewsCount, rating, size } = req.body;
 		const images = req.files.image;
-		const video = req.files.video ? req.files.video[0] : null;
 
+		// Upload images to Firebase
 		const imageUrls = await Promise.all(images.map(uploadFileToFirebase));
-		const videoUrl = video ? await uploadFileToFirebase(video) : null;
 
+		// Create new product
 		const newProduct = new Product({
-			title,
-			description,
+			name,
 			price,
-			discountPrice,
+			sold,
+			reviewsCount,
+			rating,
 			imageUrls,
-			videoUrl,
-			category,
-			size,
-			loadCapacity,
-			engine,
+			size, // Size options: [1, 2, 3, 4]
 		});
 
 		await newProduct.save();
@@ -59,7 +56,7 @@ const uploadFileToFirebase = (file) => {
 
 export const getProducts = async (req, res) => {
 	try {
-		const products = await Product.find().populate('comments').populate('category');
+		const products = await Product.find();
 		res.status(200).json(products);
 	} catch (error) {
 		res.status(400).json({ error: error.message });
@@ -68,7 +65,7 @@ export const getProducts = async (req, res) => {
 
 export const getProductById = async (req, res) => {
 	try {
-		const product = await Product.findById(req.params.id).populate('comments').populate('category');
+		const product = await Product.findById(req.params.id);
 		if (!product) return res.status(404).json({ error: 'Product not found' });
 		res.status(200).json(product);
 	} catch (error) {
@@ -78,18 +75,15 @@ export const getProductById = async (req, res) => {
 
 export const searchProducts = async (req, res) => {
 	try {
-		const { title, content, createdAt, discountPrice, size, loadCapacity, engine } = req.body;
+		const { name, price, rating, size } = req.body;
 
 		const searchCriteria = {};
-		if (title) searchCriteria.title = { $regex: title, $options: 'i' };
-		if (content) searchCriteria.content = { $regex: content, $options: 'i' };
-		if (createdAt) searchCriteria.createdAt = { $gte: new Date(createdAt) };
-		if (discountPrice) searchCriteria.discountPrice = discountPrice;
-		if (size) searchCriteria.size = { $regex: size, $options: 'i' };
-		if (loadCapacity) searchCriteria.loadCapacity = loadCapacity;
-		if (engine) searchCriteria.engine = { $regex: engine, $options: 'i' };
+		if (name) searchCriteria.name = { $regex: name, $options: 'i' };
+		if (price) searchCriteria.price = price;
+		if (rating) searchCriteria.rating = rating;
+		if (size) searchCriteria.size = size;
 
-		const products = await Product.find(searchCriteria).populate('comments');
+		const products = await Product.find(searchCriteria);
 		res.status(200).json(products);
 	} catch (error) {
 		res.status(400).json({ error: error.message });
@@ -114,42 +108,26 @@ export const deleteProduct = async (req, res) => {
 export const updateProduct = async (req, res) => {
 	try {
 		const { id } = req.params;
-		const { title, description, price, discountPrice, category, size, loadCapacity, engine } = req.body;
+		const { name, price, sold, reviewsCount, rating, size } = req.body;
 
 		const images = req.files.image;
-		const video = req.files.video ? req.files.video[0] : null;
 
 		let imageUrls = [];
 		if (images) {
 			imageUrls = await Promise.all(images.map(uploadFileToFirebase));
 		}
-		let videoUrl = null;
-		if (video) {
-			videoUrl = await uploadFileToFirebase(video);
-		}
-
-		const formattedCategory = Array.isArray(category)
-			? category
-					.filter((id) => mongoose.Types.ObjectId.isValid(id)) // Validate ObjectId strings
-					.map((id) => mongoose.Types.ObjectId(id))
-			: [];
 
 		const updatedProductData = {
-			title,
-			description,
+			name,
 			price,
-			discountPrice,
-			category: formattedCategory.length > 0 ? formattedCategory : undefined, // Do not include if empty
+			sold,
+			reviewsCount,
+			rating,
 			size,
-			loadCapacity,
-			engine,
 		};
 
 		if (imageUrls.length > 0) {
 			updatedProductData.imageUrls = imageUrls;
-		}
-		if (videoUrl) {
-			updatedProductData.videoUrl = videoUrl;
 		}
 
 		const updatedProduct = await Product.findByIdAndUpdate(id, updatedProductData, { new: true });

@@ -1,18 +1,14 @@
 import mongoose from 'mongoose';
 
 const productSchema = new mongoose.Schema({
-	title: { type: String, required: true },
-	description: { type: String, required: true },
+	name: { type: String, required: true },
 	price: { type: Number, required: true },
-	discountPrice: { type: Number },
+	sold: { type: Number, default: 0 },
+	reviewsCount: { type: Number, default: 0 },
+	rating: { type: Number, default: 0 },
 	imageUrls: { type: [String], required: true },
-	videoUrl: { type: String },
+	size: { type: [String], required: true },
 	createdAt: { type: Date, default: Date.now },
-	comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
-	category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
-	size: { type: String, required: true },
-	loadCapacity: { type: Number, required: true },
-	engine: { type: String, required: true },
 });
 
 const Product = mongoose.model('Product', productSchema);
