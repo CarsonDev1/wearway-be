@@ -13,6 +13,7 @@ import multer from 'multer';
 import { updateProduct } from './controllers/product.controller.js';
 import setupSwaggerDocs from './swagger.js';
 import swaggerUi from 'swagger-ui-express';
+import swaggerDocs from './swagger.js';
 
 dotenv.config();
 
