@@ -11,6 +11,8 @@ import categoryRoutes from './routes/category.routes.js';
 import authRoutes from './routes/auth.routes.js';
 import multer from 'multer';
 import { updateProduct } from './controllers/product.controller.js';
+import setupSwaggerDocs from './swagger.js';
+import swaggerUi from 'swagger-ui-express';
 
 dotenv.config();
 
@@ -37,6 +39,8 @@ const upload = multer({ limits: { fileSize: 50 * 1024 * 1024 } });
 app.put('/api/products/:id', upload.fields([{ name: 'image' }, { name: 'video' }]), updateProduct);
 
 app.use('/api/auth', authRoutes);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.get('/', (req, res) => {
 	res.send('Hello, Vercel!');
