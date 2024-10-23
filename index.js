@@ -6,6 +6,7 @@ import config from './config.js';
 import cors from 'cors';
 
 import productRoutes from './routes/product.routes.js';
+import orderRoutes from './routes/order.routes.js';
 import commentRoutes from './routes/comment.routes.js';
 import categoryRoutes from './routes/category.routes.js';
 import authRoutes from './routes/auth.routes.js';
@@ -31,6 +32,7 @@ mongoose
 	.catch((err) => console.log(err));
 
 app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
 app.use('/api/category', categoryRoutes);
 app.use('/api/comments', commentRoutes);
 app.use(bodyParser.json({ limit: '50mb' }));
@@ -47,5 +49,5 @@ app.get('/', (req, res) => {
 	res.send('Hello, Vercel!');
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

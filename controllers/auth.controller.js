@@ -133,11 +133,22 @@ export const updateUser = async (req, res) => {
 			updatedData.password = await bcrypt.hash(updatedData.password, 12);
 		}
 
-		const updatedUser = await User.findByIdAndUpdate(id, updatedData, { new: true });
+		// Find user by ID and update with new data, including address and company
+		const updatedUser = await User.findByIdAndUpdate(id, updatedData, { new: true, runValidators: true });
 
 		if (!updatedUser) return res.status(404).json({ error: 'User not found' });
 
-		res.status(200).json(updatedUser);
+		// Ensure the updated user data is returned correctly
+		res.status(200).json({
+			_id: updatedUser._id,
+			username: updatedUser.username,
+			email: updatedUser.email,
+			phone_number: updatedUser.phone_number,
+			avatar: updatedUser.avatar,
+			role: updatedUser.role,
+			address: updatedUser.address, // Include address field
+			company: updatedUser.company, // Include company field
+		});
 	} catch (error) {
 		res.status(400).json({ error: error.message });
 	}
