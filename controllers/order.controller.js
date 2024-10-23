@@ -3,16 +3,22 @@ import Product from '../models/product.model.js';
 
 export const createOrder = async (req, res) => {
 	try {
-		const { productId, quantity, customerName, customerAddress, customerPhone } = req.body;
-		const product = await Product.findById(productId);
-		if (!product) {
-			return res.status(404).json({ error: 'Product not found' });
-		}
-		const totalPrice = product.price * quantity;
+		const { products, customerName, customerAddress, customerPhone } = req.body;
+
+		let totalPrice = 0;
+		const productDetails = await Promise.all(
+			products.map(async (item) => {
+				const product = await Product.findById(item.productId);
+				if (!product) {
+					throw new Error(`Product not found for ID: ${item.productId}`);
+				}
+				totalPrice += product.price * item.quantity;
+				return { product: item.productId, quantity: item.quantity };
+			})
+		);
 
 		const newOrder = new Order({
-			product: productId,
-			quantity,
+			products: productDetails,
 			totalPrice,
 			customerName,
 			customerAddress,
@@ -28,7 +34,7 @@ export const createOrder = async (req, res) => {
 
 export const getOrders = async (req, res) => {
 	try {
-		const orders = await Order.find().populate('product');
+		const orders = await Order.find().populate('products.product');
 		res.status(200).json(orders);
 	} catch (error) {
 		res.status(400).json({ error: error.message });
@@ -37,7 +43,7 @@ export const getOrders = async (req, res) => {
 
 export const getOrderById = async (req, res) => {
 	try {
-		const order = await Order.findById(req.params.id).populate('product');
+		const order = await Order.findById(req.params.id).populate('products.product');
 		if (!order) {
 			return res.status(404).json({ error: 'Order not found' });
 		}
