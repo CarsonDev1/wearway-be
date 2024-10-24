@@ -6,7 +6,6 @@ export const initiatePayment = async (req, res) => {
 	try {
 		const { orderId, amount } = req.body;
 
-		// Call the MoMo payment service
 		const momoResponse = await createMomoPayment(orderId, amount);
 
 		if (momoResponse.payUrl) {
