@@ -13,7 +13,11 @@ export const createOrder = async (req, res) => {
 					throw new Error(`Product not found for ID: ${item.productId}`);
 				}
 				totalPrice += product.price * item.quantity;
-				return { product: item.productId, quantity: item.quantity };
+				return {
+					product: item.productId,
+					productName: product.name, // Add the product name here
+					quantity: item.quantity,
+				};
 			})
 		);
 
