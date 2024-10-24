@@ -6,6 +6,7 @@ export const createMomoPayment = async (orderId, amount) => {
 	try {
 		const { partnerCode, accessKey, secretKey, endpoint, returnUrl, notifyUrl } = momoConfig;
 		const requestId = `${partnerCode}-${Date.now()}`;
+		const orderId = partnerCode + new Date().getTime();
 		const orderInfo = `Payment for order ${orderId}`;
 		const rawSignature = `accessKey=${accessKey}&amount=${amount}&extraData=&ipnUrl=${notifyUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${returnUrl}&requestId=${requestId}&requestType=captureWallet`;
 
