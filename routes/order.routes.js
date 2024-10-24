@@ -8,5 +8,7 @@ router.get('/:id', orderController.getOrderById); // Lấy chi tiết đơn hàn
 router.post('/create', orderController.createOrder); // Tạo đơn hàng mới
 router.patch('/:id/status', orderController.updateOrderStatus); // Cập nhật trạng thái đơn hàng
 router.delete('/:id', orderController.deleteOrder); // Xóa đơn hàng
+router.post('/payment', orderController.initiatePayment);
+router.post('/payment/ipn', orderController.handleMomoIPN);
 
 export default router;

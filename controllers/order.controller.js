@@ -1,5 +1,43 @@
 import Order from '../models/order.model.js';
 import Product from '../models/product.model.js';
+import { createMomoPayment } from '../service/momo.service.js';
+
+export const initiatePayment = async (req, res) => {
+	try {
+		const { orderId, amount } = req.body;
+
+		// Call Momo service to create payment
+		const momoResponse = await createMomoPayment(orderId, amount);
+
+		if (momoResponse.payUrl) {
+			res.status(200).json({ payUrl: momoResponse.payUrl });
+		} else {
+			throw new Error('Failed to generate Momo payment URL');
+		}
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
+};
+
+// Optional: Add IPN handler for Momo notifications
+export const handleMomoIPN = async (req, res) => {
+	try {
+		const { orderId, resultCode } = req.body;
+
+		if (resultCode == 0) {
+			// Payment successful
+			const order = await Order.findById(orderId);
+			if (order) {
+				order.status = 'paid';
+				await order.save();
+			}
+		}
+
+		res.status(200).json({ message: 'IPN received' });
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
+};
 
 export const createOrder = async (req, res) => {
 	try {
