@@ -6,26 +6,26 @@ export const initiatePayment = async (req, res) => {
 	try {
 		const { orderId, amount } = req.body;
 
-		// Call Momo service to create payment
+		// Call the MoMo payment service
 		const momoResponse = await createMomoPayment(orderId, amount);
 
 		if (momoResponse.payUrl) {
 			res.status(200).json({ payUrl: momoResponse.payUrl });
 		} else {
-			throw new Error('Failed to generate Momo payment URL');
+			throw new Error('Failed to generate MoMo payment URL');
 		}
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
 };
 
-// Optional: Add IPN handler for Momo notifications
+// Optional: Add IPN handler for MoMo notifications
 export const handleMomoIPN = async (req, res) => {
 	try {
 		const { orderId, resultCode } = req.body;
 
-		if (resultCode == 0) {
-			// Payment successful
+		if (resultCode === 0) {
+			// Payment successful, update order status
 			const order = await Order.findById(orderId);
 			if (order) {
 				order.status = 'paid';
@@ -33,7 +33,7 @@ export const handleMomoIPN = async (req, res) => {
 			}
 		}
 
-		res.status(200).json({ message: 'IPN received' });
+		res.status(200).json({ message: 'IPN received successfully' });
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
