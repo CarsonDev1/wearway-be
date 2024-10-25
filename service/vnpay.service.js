@@ -18,7 +18,7 @@ export const createVnpayPayment = async (orderId, amount, orderInfo, bankCode = 
 			vnp_Version,
 			vnp_Command,
 			vnp_TmnCode,
-			vnp_Amount: amount * 100, // Số tiền tính theo đơn vị nhỏ nhất của VND
+			vnp_Amount: amount * 100,
 			vnp_CurrCode,
 			vnp_TxnRef: orderId,
 			vnp_OrderInfo: orderInfo,
