@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import querystring from 'querystring';
-import vnpayConfig from '../config/vnpayConfig.js';
+import vnpayConfig from '../config/vnpayConfig';
 
 export const createVnpayPayment = async (orderId, amount, orderInfo, bankCode = '') => {
 	try {
