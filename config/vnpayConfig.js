@@ -6,7 +6,6 @@ const vnpayConfig = {
 	vnp_HashSecret: process.env.VNP_HASHSECRET,
 	vnp_Url: 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html',
 	vnp_ReturnUrl: process.env.VNP_RETURNURL,
-	vnp_IpnUrl: process.env.VNP_IPNURL,
+	vnp_IpnUrl: 'https://yourdomain.com/vnpay_ipn',
 };
-
 export default vnpayConfig;

@@ -7,11 +7,11 @@ export const createVnpayPayment = async (orderId, amount, orderInfo, bankCode = 
 		const { vnp_TmnCode, vnp_HashSecret, vnp_Url, vnp_ReturnUrl } = vnpayConfig;
 
 		const vnp_Version = '2.1.0';
-		const ipAddr = '0.0.0.0';
+		const ipAddr = '192.168.111.102';
 		const vnp_Command = 'pay';
 		const vnp_CurrCode = 'VND';
 		const locale = 'vn';
-		const orderType = 'other';
+		const orderType = 'other'; // Bạn có thể tùy chỉnh theo loại đơn hàng
 		const createDate = new Date().toISOString().slice(0, 19).replace(/T|:|-/g, '');
 
 		let vnp_Params = {
