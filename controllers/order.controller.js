@@ -6,7 +6,7 @@ import { createVnpayPayment } from '../service/vnpay.service.js';
 export const initiateVnpayPayment = async (req, res) => {
 	try {
 		const { orderId, amount, orderDescription, bankCode } = req.body;
-		const ipAddr = req.headers['x-forwarded-for'] || req.connection.remoteAddress || '0.0.0.0';
+		const ipAddr = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
 		const vnpayResponse = await createVnpayPayment(orderId, amount, ipAddr, orderDescription, bankCode);
 
