@@ -9,4 +9,8 @@ const vnpayConfig = {
 	vnp_IpnUrl: 'https://yourdomain.com/vnpay_ipn',
 };
 
+console.log('VNP_TmnCode:', vnpayConfig.vnp_TmnCode);
+console.log('VNP_HashSecret:', vnpayConfig.vnp_HashSecret);
+console.log('VNP_ReturnUrl:', vnpayConfig.vnp_ReturnUrl);
+
 export default vnpayConfig;
